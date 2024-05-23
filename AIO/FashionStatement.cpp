@@ -34,8 +34,6 @@ using vpl = vector<pll>;
 #define all(x) begin(x), end(x)
 #define max(n, m) ((n > m) ? n : m)
 #define min(n, m) ((n < m) ? n : m)
-#define YES cout << "YES" << nl
-#define NO cout << "NO" << nl
 
 #ifdef DBG
 #include "dbg.h"
@@ -44,43 +42,30 @@ using vpl = vector<pll>;
 #define dbgm(...) 110100100
 #endif
 
-// check for overflow (long long vs int / make everything long long)
-// index out of bounds can cause program to work locally but won't on grading server
-//
-// Solution Ideas:
-//  - Linear search
-//  - Binary search
-//  - Unordered_... data structures
-
-vector<int> P;
-vector<bool> vis;
-
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
+inline void setIO (string input = "") {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    if (input.size()) {
+        freopen((input + ".in").c_str(), "r", stdin);
+        freopen((input + ".out").c_str(), "w", stdout);
+    }
 }
 
 int main () {
+#ifndef LOCAL
+    freopen("fashin.txt", "r", stdin);
+    freopen("fashout.txt", "w", stdout);
+#else
     fastIO;
-#ifdef LOCAL
-    clock_t tStart = clock();
 #endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
-    for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
+    int n; cin >> n;
+    int money[] {100, 20, 5, 1};
+    int ans = 0;
+    for (int i = 0; i < 4; i++) {
+        ans += n / money[i];
+        n %= money[i];
     }
-
-#ifdef LOCAL
-    cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
-#endif
-
+    cout << ans << nl;
     return 0;
 }

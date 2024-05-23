@@ -52,35 +52,32 @@ using vpl = vector<pll>;
 //  - Binary search
 //  - Unordered_... data structures
 
-vector<int> P;
-vector<bool> vis;
+void solve () {
+    int n, m; cin >> n >> m;
+    vi A(n), B(n);
+    for (int i = 0; i < n; i++) {
+        int a; cin >> a;
+        A[i] = a; B[i] = a;
+    }
+    sort(all(B));
 
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
+    int cur = 0, ans = 0;
+    for (int i = 0; i < n && B[i] <= m; i++) {
+        m -= B[i];
+        ans++;
+    }
+
+    if (ans > 0 && ans != n && m + B[ans - 1] >= A[ans]) ans++;
+    cout << n + 1 - ans << nl;
 }
 
 int main () {
     fastIO;
-#ifdef LOCAL
-    clock_t tStart = clock();
-#endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
-    for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
-    }
-
-#ifdef LOCAL
-    cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
-#endif
+    int t;
+    cin >> t;
+    while (t--)
+        solve();
 
     return 0;
 }

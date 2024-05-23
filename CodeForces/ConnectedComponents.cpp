@@ -52,35 +52,50 @@ using vpl = vector<pll>;
 //  - Binary search
 //  - Unordered_... data structures
 
-vector<int> P;
-vector<bool> vis;
-
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
-}
+int n, m;
+// remember the non-existent edges using tree map
+map<pi, bool> adj;
+vector<bool> visited;
 
 int main () {
     fastIO;
-#ifdef LOCAL
-    clock_t tStart = clock();
-#endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
-    for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
+    cin >> n >> m;
+    visited.resize(n); 
+    for (int i = 0; i < m; i++) {
+        int a, b; cin >> a >> b; --a, --b;
+        adj[{a, b}] = true; adj[{b, a}] = true;
     }
 
-#ifdef LOCAL
-    cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
-#endif
+    set<int> left;
+    for (int i = 0; i < n; i++)
+        left.insert(i);
+
+    vi ans;
+    for (int i = 0; i < n; i++) {
+        if (visited[i]) continue;
+        int count = 0;
+        queue<int> q; q.push(i);
+        while (!q.empty()) {
+            vi remove;
+            int top = q.front(); q.pop();
+            if (visited[top]) continue;
+            visited[top] = true;
+            for (int l : left) {
+                if (adj[{l, top}]) continue;
+                count++;
+                remove.pb(l);
+                if (visited[l]) continue;
+                q.push(l);
+            }
+            for (int r : remove) left.erase(r);
+        }
+        ans.pb(count);
+    }
+    sort(all(ans));
+    cout << ans.size() << nl;
+    for (int a : ans) cout << a << sp;
+    cout << nl;
 
     return 0;
 }

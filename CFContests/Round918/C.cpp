@@ -44,43 +44,25 @@ using vpl = vector<pll>;
 #define dbgm(...) 110100100
 #endif
 
-// check for overflow (long long vs int / make everything long long)
-// index out of bounds can cause program to work locally but won't on grading server
-//
-// Solution Ideas:
-//  - Linear search
-//  - Binary search
-//  - Unordered_... data structures
-
-vector<int> P;
-vector<bool> vis;
-
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
+void solve () {
+    int n; cin >> n;
+    ll sum = 0;
+    for (int i = 0; i < n; i++) {
+        int a; cin >> a;
+        sum += a;
+    }
+    ll s = sqrt(sum);
+    if (s * s == sum) YES;
+    else NO;
 }
 
 int main () {
     fastIO;
-#ifdef LOCAL
-    clock_t tStart = clock();
-#endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
-    for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
-    }
-
-#ifdef LOCAL
-    cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
-#endif
+    ll t;
+    cin >> t;
+    while (t--)
+        solve();
 
     return 0;
 }

@@ -52,35 +52,50 @@ using vpl = vector<pll>;
 //  - Binary search
 //  - Unordered_... data structures
 
-vector<int> P;
-vector<bool> vis;
+int n;
+// set to ensure unique values of adjacency 
+vector<set<int>> adj;
+vector<bool> visited;
 
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
+void solve () {
+    cin >> n;
+    adj.clear(); adj.resize(n); visited.clear(); visited.resize(n, false);
+    for (int i = 0; i < n; i++) {
+        int a; cin >> a; a--;
+        adj[i].insert(a);
+        adj[a].insert(i);
+    }
+
+    // find the components (linear or cyclic)
+    // use this information to find min and max
+    int lines = 0, cycles = 0;
+    for (int i = 0; i < n; i++) {
+        if (visited[i]) continue;
+        queue<int> q; q.push(i);
+        vi component;
+        while (!q.empty()) {
+            int top = q.front(); q.pop();
+            if (visited[top]) continue;
+            visited[top] = true; component.pb(top);
+            for (int c : adj[top]) q.push(c);
+        }
+        for (int c : component) {
+            if (adj[c].size() == 1) { lines++; cycles--; break; }
+        }
+        cycles++;
+    }
+    uint thing = 0;
+
+    cout << cycles + min(1, lines) << sp << cycles + lines << nl;
 }
 
 int main () {
     fastIO;
-#ifdef LOCAL
-    clock_t tStart = clock();
-#endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
-    for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
-    }
-
-#ifdef LOCAL
-    cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
-#endif
+    int t;
+    cin >> t;
+    while (t--)
+        solve();
 
     return 0;
 }

@@ -52,35 +52,32 @@ using vpl = vector<pll>;
 //  - Binary search
 //  - Unordered_... data structures
 
-vector<int> P;
-vector<bool> vis;
+void solve () {
+    int n, m; cin >> n >> m;
+    vi B(n); for (int& b : B) cin >> b;
+    vi G(m); for (int& g : G) cin >> g;
 
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
+    sort(all(B)); sort(all(G));
+
+    // Impossible case 
+    if (B[n - 1] > G[0]) { cout << -1 << nl; return; }
+
+    ll ans = 0;
+    for (ll b : B) { ans += (b * m); }
+    // Greedily assign to the last boy to minimize amount
+    for (int i = 1; i < m; i++) ans += G[i] - B[n - 1];
+    // If not possible to have been given by the last boy, take from the second to last boy
+    if (G[0] != B[n - 1]) ans += G[0] - B[n - 2];
+    
+    cout << ans << nl;
 }
 
 int main () {
     fastIO;
-#ifdef LOCAL
-    clock_t tStart = clock();
-#endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
-    for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
-    }
-
-#ifdef LOCAL
-    cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
-#endif
+    int t = 1;
+    while (t--)
+        solve();
 
     return 0;
 }

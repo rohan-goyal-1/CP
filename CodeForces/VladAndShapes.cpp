@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <cstdio>
 #include <cstring>
 #include <functional>
 #include <iomanip>
@@ -18,7 +17,6 @@
 #include <stack>
 #include <numeric>
 using namespace std;
-#define endl '\n'
 #define sp ' '
 #define nl '\n'
 #define fastIO cin.tie(NULL) -> sync_with_stdio(false)
@@ -32,10 +30,9 @@ using vpi = vector<pi>;
 using vpl = vector<pll>;
 #define pb push_back
 #define all(x) begin(x), end(x)
-#define max(n, m) ((n > m) ? n : m)
-#define min(n, m) ((n < m) ? n : m)
 #define YES cout << "YES" << nl
 #define NO cout << "NO" << nl
+#pragma GCC optimize("O3,unroll-loops")
 
 #ifdef DBG
 #include "dbg.h"
@@ -43,6 +40,8 @@ using vpl = vector<pll>;
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
+
+const int dX[4]{1, 0, -1, 0}, dY[4]{0, 1, 0, -1};
 
 // check for overflow (long long vs int / make everything long long)
 // index out of bounds can cause program to work locally but won't on grading server
@@ -52,13 +51,32 @@ using vpl = vector<pll>;
 //  - Binary search
 //  - Unordered_... data structures
 
-vector<int> P;
-vector<bool> vis;
+// ** RESET GLOBALS **
 
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
+void solve () {
+    int n; cin >> n;
+    int x1 = n + 1, y1 = n + 1, x2 = -1, y2 = -1;
+    for (int i = 0; i < n; i++) {
+        string s; cin >> s;
+        for (int j = 0; j < n; j++) {
+            if (s[j] == '1') {
+                x1 = min(x1, i);
+                y1 = min(y1, j);
+                x2 = max(x2, i);
+                y2 = max(y2, j);
+            }
+        }
+    }
+    if (x2 - x1 == y2 - y1) {
+        cout << "SQUARE" << nl;
+    }
+    else {
+        cout << "TRIANGLE" << nl;
+    }
+}
+
+void reset () {
+
 }
 
 int main () {
@@ -67,15 +85,11 @@ int main () {
     clock_t tStart = clock();
 #endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
-    for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
+    int t;
+    cin >> t;
+    while (t--) {
+        reset();
+        solve();
     }
 
 #ifdef LOCAL

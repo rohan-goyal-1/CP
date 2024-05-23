@@ -34,8 +34,6 @@ using vpl = vector<pll>;
 #define all(x) begin(x), end(x)
 #define max(n, m) ((n > m) ? n : m)
 #define min(n, m) ((n < m) ? n : m)
-#define YES cout << "YES" << nl
-#define NO cout << "NO" << nl
 
 #ifdef DBG
 #include "dbg.h"
@@ -43,6 +41,8 @@ using vpl = vector<pll>;
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
+
+const int dX[4]{1, 0, -1, 0}, dY[4]{0, 1, 0, -1};
 
 // check for overflow (long long vs int / make everything long long)
 // index out of bounds can cause program to work locally but won't on grading server
@@ -52,35 +52,23 @@ using vpl = vector<pll>;
 //  - Binary search
 //  - Unordered_... data structures
 
-vector<int> P;
-vector<bool> vis;
-
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
-}
-
 int main () {
     fastIO;
-#ifdef LOCAL
-    clock_t tStart = clock();
-#endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
-    for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
+    int n, m, k; cin >> n >> m >> k;
+    vi apps(n), apart(m);
+    for (auto& i : apps) cin >> i;
+    for (auto& i : apart) cin >> i;
+    sort(all(apps)); sort(all(apart));
+    int i = 0, j = 0, ans = 0;
+    while (i < n && j < m) {
+        if (abs(apps[i] - apart[j]) <= k) {
+            ans++; i++; j++;
+        }
+        else if (apps[i] - apart[j] > 0) j++;
+        else i++;
     }
-
-#ifdef LOCAL
-    cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
-#endif
+    cout << ans << nl;
 
     return 0;
 }

@@ -34,8 +34,6 @@ using vpl = vector<pll>;
 #define all(x) begin(x), end(x)
 #define max(n, m) ((n > m) ? n : m)
 #define min(n, m) ((n < m) ? n : m)
-#define YES cout << "YES" << nl
-#define NO cout << "NO" << nl
 
 #ifdef DBG
 #include "dbg.h"
@@ -52,14 +50,7 @@ using vpl = vector<pll>;
 //  - Binary search
 //  - Unordered_... data structures
 
-vector<int> P;
-vector<bool> vis;
-
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
-}
+// ** RESET GLOBALS **
 
 int main () {
     fastIO;
@@ -67,16 +58,16 @@ int main () {
     clock_t tStart = clock();
 #endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
-    for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
+    int n, x; cin >> n >> x;
+    vi P(n); for (int& p : P) cin >> p;
+    sort(all(P));
+    int l = 0, r = n - 1;
+    int ans = 0;
+    while (l <= r) {
+        if (P[l] + P[r] > x) { ans++; r--; }
+        else { ans++; l++, r--; }
     }
+    cout << ans << nl;
 
 #ifdef LOCAL
     cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';

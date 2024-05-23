@@ -44,6 +44,8 @@ using vpl = vector<pll>;
 #define dbgm(...) 110100100
 #endif
 
+const int dX[4]{1, 0, -1, 0}, dY[4]{0, 1, 0, -1};
+
 // check for overflow (long long vs int / make everything long long)
 // index out of bounds can cause program to work locally but won't on grading server
 //
@@ -52,13 +54,14 @@ using vpl = vector<pll>;
 //  - Binary search
 //  - Unordered_... data structures
 
-vector<int> P;
-vector<bool> vis;
-
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
+vi sort_groups (vector<string> groups) {
+    vi ans(10);
+    int count = 0;
+    for (auto s : groups) {
+        for (char c : s) ans[c - '0'] = count;
+        count++;
+    }
+    return ans;
 }
 
 int main () {
@@ -67,16 +70,19 @@ int main () {
     clock_t tStart = clock();
 #endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
-    for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
+    int k; vector<string> _; vi groups;
+    do {
+        cin >> k;
+        _.clear();
+        for (int i = 0; i < k; i++) {
+            string a; cin >> a;
+            _.pb(a);
+        }
+        groups = sort_groups(_);
     }
+    while (k != 1);
+
+    cout << "done" << nl;
 
 #ifdef LOCAL
     cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';

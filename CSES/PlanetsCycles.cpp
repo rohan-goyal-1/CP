@@ -44,6 +44,8 @@ using vpl = vector<pll>;
 #define dbgm(...) 110100100
 #endif
 
+const int dX[4]{1, 0, -1, 0}, dY[4]{0, 1, 0, -1};
+
 // check for overflow (long long vs int / make everything long long)
 // index out of bounds can cause program to work locally but won't on grading server
 //
@@ -52,14 +54,10 @@ using vpl = vector<pll>;
 //  - Binary search
 //  - Unordered_... data structures
 
-vector<int> P;
-vector<bool> vis;
+// ** RESET GLOBALS **
 
-int dfs (int p) {
-    if (vis[p]) return p + 1;
-    vis[p] = true;
-    return dfs(P[p]);
-}
+vi adj, ans;
+vector<bool> visited;
 
 int main () {
     fastIO;
@@ -67,16 +65,33 @@ int main () {
     clock_t tStart = clock();
 #endif
 
-    int n;
-    cin >> n;
-    P.resize(n), vis.resize(n);
-    for (auto& p : P) cin >> p, --p;
-    dbg(P);
+    int n; cin >> n; 
+    adj.resize(n); ans.resize(n, -1); visited.resize(n);
+    for (int& i : adj) cin >> i, i--;
+
     for (int i = 0; i < n; i++) {
-        int ans = dfs(i);
-        cout << ans << " \n"[i == n - 1];
-        fill(all(vis), false);
+        int a = i, len = 0;
+        while (!visited[a]) {
+            visited[a] = true;
+            a = adj[a];
+            len++;
+        }
+        int temp = len;
+        len += ans[a];
+        int b = i;
+        bool flag = true;
+        for (int j = 0; j < temp; j++) {
+            if(a == b)
+                flag = false;
+            ans[b] = len;
+            b = adj[b];
+            if (flag) 
+                len--;
+        }
     }
+
+    for (int i = 0; i < n; i++)
+        cout << ++ans[i] << " \n"[i == n - 1];
 
 #ifdef LOCAL
     cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
