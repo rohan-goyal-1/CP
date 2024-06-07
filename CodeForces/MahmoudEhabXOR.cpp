@@ -30,8 +30,6 @@ using vpi = vector<pi>;
 using vpl = vector<pll>;
 #define pb push_back
 #define all(x) begin(x), end(x)
-#define YES cout << "YES" << nl
-#define NO cout << "NO" << nl
 #pragma GCC optimize("O3,unroll-loops")
 
 #ifdef DBG
@@ -53,45 +51,38 @@ const int dX[4]{1, 0, -1, 0}, dY[4]{0, 1, 0, -1};
 
 // ** RESET GLOBALS **
 
-int n; 
-vi A;
-
-vi solve1 () {
-
-}
-
-void solve () {
-    cin >> n; A.resize(n);
-    for (int& a : A) cin >> a;
-
-    vi ans1 = solve1();
-    reverse(all(A));
-    vi ans2 = solve1();
-    vi ans(n);
-    for (int i = 0; i < n; i++) {
-        ans[i] = min(ans2[i], ans1[i]);
-    }
-    for (int i = 0; i < n; i++) {
-        if (ans[i] == INT_MAX) ans[i] = -1;
-        cout << 
-    }
-}
-
-void reset () {
-
-}
-
 int main () {
     fastIO;
 #ifdef LOCAL
     clock_t tStart = clock();
 #endif
 
-    int t;
-    cin >> t;
-    while (t--) {
-        reset();
-        solve();
+    int n, x; cin >> n >> x;
+
+    if (n == 2 && x == 0) {
+        cout << "NO" << nl;
+    }
+    else {
+        cout << "YES" << nl;
+        if (n == 1) {
+            cout << x << nl;
+        }
+        else if (n == 2) {
+            cout << x << " " << 0 << nl;
+        }
+        else {
+            int r = 0;
+            for(int i = 1; i < n - 2; i++) {
+                r ^= i;
+                cout << i << " ";
+            }
+            if (r == x) {
+                cout << (1 << 17) << " " << (1 << 18) << " " << ((1 << 17) + (1 << 18)) << nl;
+            }
+            else {
+                cout << 0 << " "  << (1 << 17) << " " << (((1 << 17) ^ r) ^ x) << nl;
+            }
+        }
     }
 
 #ifdef LOCAL
@@ -100,3 +91,4 @@ int main () {
 
     return 0;
 }
+
