@@ -51,19 +51,9 @@ const int dX[4]{1, 0, -1, 0}, dY[4]{0, 1, 0, -1};
 
 // ** RESET GLOBALS **
 
-struct Event {
-    int x, y, t;
+struct Flight {
+    int r, d, s;
 };
-
-bool cmp (Event a, Event b) {
-    return a.t < b.t;
-}
-
-
-bool works (Event a, Event b) {
-    ull dist = (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
-    return dist <= (a.t - b.t) * (a.t - b.t);
-}
 
 int main () {
     fastIO;
@@ -71,34 +61,31 @@ int main () {
     clock_t tStart = clock();
 #endif
 
-    int g, n; cin >> g >> n;
-    vector<Event> gs(g), cs(n);
-    for (Event& a : gs) cin >> a.x >> a.y >> a.t;
-    for (Event& a : cs) cin >> a.x >> a.y >> a.t;
+    int n, m; cin >> n >> m;
+    vector<vector<Flight>> adj(n);
+    vi a(n);
+    for (int i = 0; i < m; i++) {
+        int c, r, d, s; cin >> c >> r >> d >> s; --c, --d;
+        adj[c].pb({r, d, s});
+    }
+    for (int i = 0; i < n; i++) cin >> a[i];
 
-    sort(all(gs), [] (Event a, Event b) -> bool { return a.t < b.t; });
-
-    int ans = 0;
-    for (int i = 0; i < n; i++) {
-        // int idx = lower_bound(all(gs), cs[i], cmp) - gs.begin();
-        // bool thing = false;
-        // if (idx < g && idx >= 0) thing |= !works(cs[i], gs[idx]);
-        // if (idx - 1 < g && idx - 1 >= 0) thing |= !works(cs[i], gs[idx - 1]);
-        // ans += thing ? 1 : 0;
-        
-        auto it = lower_bound(all(gs), cs[i], cmp);
-        if (it == gs.begin()) {
-            if (!works(*it, cs[i])) ans++;
-        }
-        else if (it == gs.end()) {
-            if (!works(cs[i], *(--it))) ans++;
-        }
-        else {
-            if (!works(*it, cs[i]) || !works(cs[i], *(--it))) ans++;
+    dbg(adj[0].size());
+    vi ans(n, -1);
+    queue<pi> q; q.push({0, 0});
+    vector<bool> vis(n);
+    while (!q.empty()) {
+        auto [i, t] = q.front(); q.pop();
+        ans[i] = t; vis[i] = true;
+        t += a[i];
+        for (auto [r, d, s] : adj[i]) {
+            if (!vis[d] && r >= t) {
+                q.push({d, s});
+            }
         }
     }
-    
-    cout << ans << nl;
+
+    for (int i : ans) cout << i << nl;
 
 #ifdef LOCAL
     cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
