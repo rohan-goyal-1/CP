@@ -24,12 +24,34 @@ using namespace std;
 
 // ** RESET GLOBALS **
 
+vector<int> a, c;
+
+struct cmp {
+    bool operator() (const pair<int, ll>& x, const pair<int, ll>& y) {
+        return x.second > y.second;
+    }
+};
+
 void solve () {
-    string a, b; cin >> a >> b;
-    char t = a[0];
-    a[0] = b[0];
-    b[0] = t;
-    cout << a << ' ' << b << '\n';
+    int h, n; cin >> h >> n;
+    a.resize(n); c.resize(n);
+    for (int& i : a) cin >> i;
+    for (int& i : c) cin >> i;
+
+    priority_queue<pair<int, ll>, vector<pair<int, ll>>, cmp> pq;
+    for (int i = 0; i < n; i++) {
+        pq.push({i, 1});
+    }
+    ll t;
+    while (h > 0) {
+        pair<int, ll> top = pq.top(); pq.pop();
+        // dbg(top);
+        t = top.second;
+        h -= a[top.first];
+        pq.push({top.first, top.second + c[top.first]});
+    }
+
+    cout << t << '\n';
 }
 
 int main () {

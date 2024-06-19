@@ -11,7 +11,7 @@ using namespace std;
 #include "dbg.h"
 #else 
 #define dbg(...) 1000101
-#define dbgm(...) 110100100
+#define dbgm(...) 110100100 
 #endif
 
 // check for overflow (long long vs int / make everything long long)
@@ -24,11 +24,32 @@ using namespace std;
 
 // ** RESET GLOBALS **
 
+void solve () {
+    int n; cin >> n;
+    int m = -1, ret = 2;
+    for (int x = 2; x <= n; x++) {
+        int sum = 0;
+        int t = x;
+        while (t <= n) {
+            sum += t;
+            t += x;
+        }
+        if (sum > m) {
+            ret = x;
+            m = sum;
+        }
+    }
+    cout << ret << '\n';
+}
+
 int main () {
     cin.tie(nullptr) -> sync_with_stdio(false);
 
-
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
 
     return 0;
 }
-
