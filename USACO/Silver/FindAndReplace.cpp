@@ -1,125 +1,95 @@
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <cstdio>
-#include <cstring>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <limits.h>
-#include <map>
-#include <math.h>
-#include <queue>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
-#include <stack>
-#include <numeric>
+#include <bits/stdc++.h>
 using namespace std;
-#define endl '\n'
-#define sp ' '
-#define nl '\n'
-#define fastIO cin.tie(NULL) -> sync_with_stdio(false)
-using ll = long long;
-using ull = unsigned long long;
-using pi = pair<int, int>;
-using pll = pair<ll, ll>;
-using vi = vector<int>;
-using vll = vector<ll>;
-using vpi = vector<pi>;
-using vpl = vector<pll>;
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define max(n, m) ((n > m) ? n : m)
-#define min(n, m) ((n < m) ? n : m)
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
-#endif
+#endif // DBG
 
-int char_to_int (char c) {
+// check for overflow (long long vs int / make everything long long)
+// index out of bounds can cause program to work locally but won't on grading server
+
+// Solution Ideas:
+//  - Linear search
+//  - Binary search
+//  - Unordered_... data structures
+
+// ** RESET GLOBALS **
+
+int adj[52];
+bool vis[52];
+
+int to_int (char c) {
     if (c >= 'a') return c - 'a';
     return c - 'A' + 26;
 }
 
-vi visited(52, -1), ins(52, 0);
-int ans = 0;
-vi adj(52, -1);
-vector<bool> seen(52, false);
+void _solve () {
+    // reset
+    memset(adj, -1, 52*sizeof(adj[0]));
+    memset(vis, false, 52*sizeof(vis[0]));
 
-void solve () {
     string a, b; cin >> a >> b;
-    dbgm(a, b);
-    if (a == b) { cout << 0 << nl; return; }
-    int count = 0;
-    // initial processing, generation of adj, checking for impossible cases
-    for (int i = 0; i < a.size(); i++) {
-        int x = char_to_int(a[i]);
-        int y = char_to_int(b[i]);
-        if (!seen[y]) {
-            count++;
-            seen[y] = true;
-        } 
-        if (adj[x] != -1 && adj[x] != y) { cout << -1 << nl; return; }
-        if (x == y) continue;
-        adj[x] = y;
-        // dbgm(a[i], out[i]);
-    }
-    if (count == 52) { cout << -1 << nl; return; }
-    // dfs on each character (w/ visited to ensure no double counting)--> for each cycle ans++ since you need to in reality 
-    //                       --> otherwise just number of edges as js the number of moves you need to take to make everything good :):
-    dbg(adj);
-
-    // sum of edges
-    for (int i = 0; i < 52; i++)
-        if (adj[i] != -1) ans++;
-
-    // +1 for each cycle
-    for (int i = 0; i < 52; i++) {
-        if (adj[i] != -1) ins[adj[i]]++;
-    }
-
-    for (int i = 0; i < 52; i++) {
-        if (visited[i] != -1) continue;
-        int t = i;
-        while (t != -1 && visited[t] == -1) {
-            visited[t] = i;
-            t = adj[t];
+    int n = a.length();
+    set<char> s;
+    for (int i = 0; i < n; i++) {
+        s.insert(b[i]);
+        if (adj[to_int(a[i])] != -1 && adj[to_int(a[i])] != b[i]) {
+            cout << -1 << '\n';
+            return;
         }
-        if (t != -1 && visited[t] == i) {
-            int s = t;
-            bool pass = ins[t] > 1;
-            visited[t] = 1; t = adj[t];
-            while (t != s) {
-                visited[t] = 1;
-                pass = ins[t] > 1;
-                t = adj[t];
+        adj[to_int(a[i])] = to_int(b[i]);
+    }
+    if (a == b) {
+        cout << 0 << '\n';
+        return;
+    }
+    else {
+        if (s.size() == 52) {
+            cout << -1 << '\n';
+            return;
+        }
+    }
+
+    int ans = 0;
+    // all edges
+    for (int i = 0; i < 52; i++) {
+        if (adj[i] != -1 && adj[i] != i) {
+            ans++;
+        }
+    }
+
+    // sum all pure cycles with size > 1
+    for (int i = 0; i < 52; i++) {
+        if (adj[i] != i && adj[i] != -1) {
+            int x = adj[i];
+            int y = adj[x];
+            while (x != -1 && y != -1 && x != y) {
+                x = adj[x];
+                y = adj[y];
             }
-            ans += (pass ? 0 : 1);
+            x = i;
+            while (x != -1 && y != -1 && x != y) {
+                x = adj[x];
+                y = adj[y];
+            }
+            if (x == i) ans++;
         }
     }
-    
-    cout << ans << nl;
-}
 
-void reset () {
-    ans = 0;
-    fill(all(visited), -1);
-    fill(all(ins), 0);
-    fill(all(adj), -1);
-    fill(all(seen), false);
+    cout << ans << '\n';
 }
 
 int main () {
-    fastIO;
+    ios_base::sync_with_stdio(false); cin.tie(nullptr);
 
-    int t; cin >> t;
-    while (t--) { reset(); solve(); }
+    int t;
+    cin >> t;
+    while (t--) {
+        _solve();
+    }
 
     return 0;
 }

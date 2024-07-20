@@ -37,7 +37,7 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
@@ -79,10 +79,10 @@ void cycle () {
             line[cycle[cycle.size() - 1]] = -1;
         }
         set<int> viewed;
-        for (int c : cycle) 
+        for (int c : cycle)
             for (int a : adj[c])
                 viewed.insert(a);
-        for (int c : cycle) 
+        for (int c : cycle)
             ans[c] = viewed.size();
     }
 }

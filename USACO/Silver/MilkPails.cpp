@@ -37,7 +37,7 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
@@ -71,11 +71,11 @@ void dfs (int x, int y, int k) {
     dfs(X, y, k + 1);
     dfs(x, Y, k + 1);
 
-    // empty each 
+    // empty each
     dfs(0, y, k + 1);
     dfs(x, 0, k + 1);
 
-    // pour one into the other 
+    // pour one into the other
     // X: 5; x: 2; y: 2
     int putY = min(y, X - x);
     int putX = min(x, Y - y);

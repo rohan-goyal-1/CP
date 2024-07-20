@@ -37,7 +37,7 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
@@ -74,11 +74,11 @@ int main () {
             set[highest.second] = turns;
             continue;
         }
-        if (highest.first > 0) { 
+        if (highest.first > 0) {
             turns++;
         }
         highest.first -= min(highest.first, p);
-        if (highest.first > 0) { 
+        if (highest.first > 0) {
             pq.push(highest);
             set[highest.second] = turns;
         }

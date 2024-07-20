@@ -1,104 +1,73 @@
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <cstdio>
-#include <cstring>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <limits.h>
-#include <map>
-#include <math.h>
-#include <queue>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
-#include <stack>
-#include <numeric>
+#include <bits/stdc++.h>
 using namespace std;
-#define endl '\n'
-#define sp ' '
-#define nl '\n'
-#define fastIO cin.tie(NULL) -> sync_with_stdio(false)
-using ll = long long;
-using ull = unsigned long long;
-using pi = pair<int, int>;
-using pll = pair<ll, ll>;
-using vi = vector<int>;
-using vll = vector<ll>;
-using vpi = vector<pi>;
-using vpl = vector<pll>;
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define max(n, m) ((n > m) ? n : m)
-#define min(n, m) ((n < m) ? n : m)
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
-#endif
+#endif // DBG
 
-inline void setIO (string input = "") {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    if (input.size()) {
-        freopen((input + ".in").c_str(), "r", stdin);
-        freopen((input + ".out").c_str(), "w", stdout);
-    }
-}
+const string PROB_NAME = "gates";
+
+const int dx[] {-1, 1, 0, 0};
+const int dy[] {0, 0, -1, 1};
 
 const int MAXN = 1000;
-int n; 
-bool grid[4 * MAXN + 10][4 * MAXN + 10] = {false};
-bool visited[4 * MAXN + 10][4 * MAXN + 10] = {false};
-int dX[]{1, 0, -1, 0}, dY[]{0, 1, 0, -1};
+const int SZ = 4 * MAXN + 5;
+bool fence[SZ][SZ];
+bool vis[SZ][SZ];
+int n;
+string dir;
+int maxx = 2001, minx = 2001, maxy = 2001, miny = 2001;
 
-bool in (int x, int y) {
-    return x >= 0 && x < 4 * MAXN + 10 && y >= 0 && y < 4 * MAXN + 10;
+bool is_valid (int x, int y) {
+    return x <= maxx && x >= minx && y <= maxy && y >= miny && !fence[x][y] && !vis[x][y];
 }
 
 void dfs (int x, int y) {
-    if (!in(x, y) || visited[x][y] || grid[x][y])
-        return;
-    visited[x][y] = true;
+    if (!is_valid(x, y)) return;
+    vis[x][y] = true;
     for (int i = 0; i < 4; i++) {
-        dfs(x + dX[i], y + dY[i]);
+        dfs(x+dx[i], y+dy[i]);
     }
 }
 
 int main () {
+    ios_base::sync_with_stdio(false); cin.tie(nullptr);
 #ifndef LOCAL
-    setIO("gates");
-#else
-    fastIO;
-#endif
+    freopen((PROB_NAME + ".in").c_str(), "r", stdin);
+    freopen((PROB_NAME + ".out").c_str(), "w", stdout);
+#endif // LOCAL
 
-    cin >> n;
-    char d;
-    int curX = 1000, curY = 1000;
+    cin >> n >> dir;
+    int x = 2001, y = 2001;
+    map<char, pair<int, int>> dirs;
+    dirs['N'] = {1, 0}; dirs['S'] = {-1, 0}; dirs['E'] = {0, 1}; dirs['W'] = {0, -1};
     for (int i = 0; i < n; i++) {
-        cin >> d;
-        grid[curX][curY] = true;
-        if (d == 'N') curY++;
-        else if (d == 'E') curX++;
-        else if (d == 'W') curX--;
-        else curY--;
+        fence[x + dirs[dir[i]].first][y + dirs[dir[i]].second] = true;
+        fence[x + 2*dirs[dir[i]].first][y + 2*dirs[dir[i]].second] = true;
+        x += 2 * dirs[dir[i]].first;
+        y += 2 * dirs[dir[i]].second;
+        minx = min(minx, x);
+		maxx = max(maxx, x);
+		miny = min(miny, y);
+		maxy = max(maxy, y);
     }
-    grid[curX][curY] = true;
+    minx--;
+	maxx++;
+	miny--;
+	maxy++;
 
     int ans = 0;
-    for (int i = 0; i < 4 * MAXN + 10; i++)
-        for (int j = 0; j < 4 * MAXN + 10; j++)
-            if (!visited[i][j] && !grid[i][j]) {
-                ans++;
+    for (int i = minx; i <= maxx; i++)
+        for (int j = miny; j <= maxy; j++)
+            if (!vis[i][j] && !fence[i][j]) {
                 dfs(i, j);
+                ans++;
             }
 
-    cout << ans - 1 << nl;
+    cout << --ans << '\n';
 
     return 0;
 }

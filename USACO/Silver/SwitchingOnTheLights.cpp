@@ -1,107 +1,76 @@
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <cstdio>
-#include <cstring>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <limits.h>
-#include <map>
-#include <math.h>
-#include <queue>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
-#define FOR(i, a, b) for (ll i = a; i < b; i++)
-#define For(i, b) FOR(i, 0, b)
-#define endl '\n'
-#define sp << ' ' <<
-#define nl << '\n'
-#define fastIO cin.tie(NULL) -> sync_with_stdio(false)
-using ll = long long;
-using ull = unsigned long long;
-using pi = pair<int, int>;
-using pll = pair<ll, ll>;
-#define f first
-#define s second
-#define mp make_pair
-using vi = vector<int>;
-using vll = vector<ll>;
-using vpi = vector<pi>;
-using vpl = vector<pll>;
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define srt(x) sort(all(x))
-#define max(n, m) ((n > m) ? n : m)
-#define min(n, m) ((n < m) ? n : m)
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
-#endif
+#endif // DBG
 
-inline void setIO (string input = "") {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    if (input.size()) {
-        freopen((input + ".in").c_str(), "r", stdin);
-        freopen((input + ".out").c_str(), "w", stdout);
-    }
-}
+const string PROB_NAME = "lightson";
 
-const int dX[]{1, 0, -1, 0};
-const int dY[]{0, 1, 0, -1};
 const int MAXN = 105;
-int n, m, ans = 1;
-bool visited[MAXN][MAXN], lighted[MAXN][MAXN];
-vpi switches[MAXN][MAXN];
+const int dx[] {-1, 1, 0, 0};
+const int dy[] {0, 0, -1, 1};
 
-bool connected (int r, int c) {
-    For (i, 4) {
-        int x = c + dX[i];
-        int y = r + dY[i];
-        if (x < 0 || y < 0 || x >= n || y >= n) continue;
-        if (visited[x][y]) return true;
-    }
-    return false;
+bool vis[MAXN][MAXN];
+bool on[MAXN][MAXN];
+vector<pair<int, int>> switches[MAXN][MAXN];
+int n, m;
+
+bool valid (int x, int y) {
+    return x < n && x >= 0 && y < n && y >= 0;
 }
 
-void floodfill (int r, int c) {
-    if (r < 0 || r >= n || c < 0 || c >= n || !lighted[r][c] || visited[r][c] || (!connected(r, c) && (r != 0 || c != 0))) return;
-    visited[r][c] = true;
-    For (i, 4) 
-        floodfill(r + dY[i], c + dX[i]);
-    for (auto& [a, b] : switches[r][c]) {
-        if (!lighted[a][b]) ans++;
-        lighted[a][b] = true;
-        floodfill(a, b);
+void dfs (int x, int y) {
+    if (vis[x][y]) return;
+    vis[x][y] = true;
+
+    int s = switches[x][y].size();
+    for (int i = 0; i < s; i++) {
+        auto j = switches[x][y][i];
+        on[j.first][j.second] = true;
+        for (int a = 0; a < 4; a++) {
+            int nx = j.first + dx[a];
+            int ny = j.second + dy[a];
+            if (valid(nx, ny) && vis[nx][ny]) {
+                dfs(j.first, j.second);
+                break;
+            }
+        }
+    }
+    for (int i = 0; i < 4; i++) {
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        if (valid(nx, ny) && on[nx][ny])
+            dfs(nx, ny);
     }
 }
 
 int main () {
+    ios_base::sync_with_stdio(false); cin.tie(nullptr);
 #ifndef LOCAL
-    setIO("lightson");
-#else
-    fastIO;
-#endif
+    if (PROB_NAME.size()) {
+        freopen((PROB_NAME + ".in").c_str(), "r", stdin);
+        freopen((PROB_NAME + ".out").c_str(), "w", stdout);
+    }
+#endif // LOCAL
 
     cin >> n >> m;
-    while (m--) {
-        int x, y, a, b; 
-        cin >> x >> y >> a >> b; 
-        x--, y--, a--, b--;
-        switches[x][y].pb(mp(a, b));
+    for (int i = 0; i < m; i++) {
+        int x, y, a, b; cin >> x >> y >> a >> b; x--, y--, a--, b--;
+        switches[x][y].push_back({a, b});
     }
 
-    lighted[0][0] = true;
-    floodfill(0, 0);
-    cout << ans nl;
+    on[0][0] = true;
+    dfs(0, 0);
+
+    int ans = 0;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            if (on[i][j]) ans++;
+    cout << ans << '\n';
 
     return 0;
 }

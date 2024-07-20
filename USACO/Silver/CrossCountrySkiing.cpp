@@ -1,121 +1,88 @@
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <cstdio>
-#include <cstring>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <limits.h>
-#include <map>
-#include <math.h>
-#include <queue>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
-#define FOR(i, a, b) for (ll i = a; i < b; i++)
-#define For(i, b) FOR(i, 0, b)
-#define endl '\n'
-#define sp << ' ' <<
-#define nl << '\n'
-#define fastIO cin.tie(NULL) -> sync_with_stdio(false)
-using ll = long long;
-using ull = unsigned long long;
-using pi = pair<int, int>;
-using pll = pair<ll, ll>;
-#define f first
-#define s second
-#define mp make_pair
-using vi = vector<int>;
-using vll = vector<ll>;
-using vpi = vector<pi>;
-using vpl = vector<pll>;
-#define pb push_back
-#define all(x) begin(x), end(x)
-#define srt(x) sort(all(x))
-#define max(n, m) ((n > m) ? n : m)
-#define min(n, m) ((n < m) ? n : m)
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
-#endif
+#endif // DBG
 
-inline void setIO (string input = "") {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    if (input.size()) {
-        freopen((input + ".in").c_str(), "r", stdin);
-        freopen((input + ".out").c_str(), "w", stdout);
+const string PROB_NAME = "ccski";
+
+const int dx[] {-1, 1, 0, 0};
+const int dy[] {0, 0, -1, 1};
+
+const int MAXN = 505;
+int m, n;
+int mid;
+int grid[MAXN][MAXN];
+bool is_way[MAXN][MAXN];
+bool vis[MAXN][MAXN];
+vector<pair<int, int>> ways;
+
+bool is_valid (int x, int y) {
+    return x < m && x >= 0 && y < n && y >= 0;
+}
+
+void floodfill (int x, int y) {
+    if (vis[x][y]) return;
+    vis[x][y] = true;
+    for (int i = 0; i < 4; i++) {
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        if (is_valid(nx, ny) && abs(grid[nx][ny] - grid[x][y]) <= mid)
+            floodfill(nx, ny);
     }
 }
 
-const int MAXN = 505;
-ll m, n, maxE = INT64_MIN, minE = INT64_MAX, startI, startJ;
-ll grid[MAXN][MAXN];
-bool way[MAXN][MAXN];
-bool visited[MAXN][MAXN];
-const int dX[]{1, 0, -1, 0};
-const int dY[]{0, 1, 0, -1};
-
-void floodfill (ll d, ll r, ll c, ll prev) {
-    if (r < 0 || c < 0 || r >= m || c >= n || visited[r][c] || abs(grid[r][c] - prev) > d) return;
-    visited[r][c] = true;
-    For (i, 4)
-        floodfill(d, r + dY[i], c + dX[i], grid[r][c]);
-}
-
-bool works (ll d) {
-    floodfill(d, startI, startJ, grid[startI][startJ]);
-    For (i, m) {
-        For (j, n) {
-            if (way[i][j] && !visited[i][j]) return false;
-        }
+bool works () {
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++)
+            vis[i][j] = false;
+    floodfill(ways[0].first, ways[0].second);
+    int s = ways.size();
+    for (int i = 0; i < s; i++) {
+        if (!vis[ways[i].first][ways[i].second])
+            return false;
     }
     return true;
 }
 
 int main () {
+    ios_base::sync_with_stdio(false); cin.tie(nullptr);
 #ifndef LOCAL
-    setIO("ccski");
-#else
-    fastIO;
-#endif
+    if (PROB_NAME.size()) {
+        freopen((PROB_NAME + ".in").c_str(), "r", stdin);
+        freopen((PROB_NAME + ".out").c_str(), "w", stdout);
+    }
+#endif // LOCAL
 
     cin >> m >> n;
-    For (i, m) {
-        For (j, n) {
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++)
             cin >> grid[i][j];
-            maxE = max(maxE, grid[i][j]);
-            minE = min(minE, grid[i][j]);
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++) {
+            cin >> is_way[i][j];
+            if (is_way[i][j])
+                ways.push_back({i, j});
         }
-    }
 
-    For (i, m) {
-        For (j, n) {
-            cin >> way[i][j];
-            if (way[i][j]) startI = i, startJ = j;
-        }
-    }
-
-    ll lo = 0, hi = maxE - minE, ans = -1;
-    while (lo < hi) {
-        ll mid = (hi + lo) / 2;
-        memset(visited, false, sizeof(visited));
-        dbg(sizeof(visited));
-        if (works(mid)) {
+    int l = 0, r = 1e9;
+    int ans = 1e9;
+    while (l <= r) {
+        mid = (l + r) / 2;
+        if (works()) {
+            r = mid - 1;
             ans = mid;
-            hi = mid - 1;
         }
-        else
-            lo = mid + 1;
+        else {
+            l = mid + 1;
+        }
     }
-    cout << ans nl;
+
+    cout << ans << '\n';
 
     return 0;
 }

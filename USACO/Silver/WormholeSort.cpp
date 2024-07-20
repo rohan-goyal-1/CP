@@ -42,9 +42,9 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
-#define dbg(...) 
-#define dbgm(...) 
+#else
+#define dbg(...)
+#define dbgm(...)
 #endif
 
 inline void setIO (string input = "") {

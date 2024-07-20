@@ -37,7 +37,7 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
@@ -63,7 +63,7 @@ int main () {
     int n; cin >> n;
     int mod = n % 8, times = n / 8;
     int ans = times * 15;
-    if (mod) 
+    if (mod)
         ans += mods[--mod];
     else
         ans--;

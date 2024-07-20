@@ -1,80 +1,55 @@
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <cstring>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <limits.h>
-#include <map>
-#include <math.h>
-#include <queue>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
-#include <stack>
-#include <numeric>
+#include <bits/stdc++.h>
 using namespace std;
-#define sp ' '
-#define nl '\n'
-#define fastIO cin.tie(NULL) -> sync_with_stdio(false)
-using ll = long long;
-using ull = unsigned long long;
-using pi = pair<int, int>;
-using pll = pair<ll, ll>;
-using vi = vector<int>;
-using vll = vector<ll>;
-using vpi = vector<pi>;
-using vpl = vector<pll>;
-#define pb push_back
-#define all(x) begin(x), end(x)
-#pragma GCC optimize("O3,unroll-loops")
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
-#endif
+#endif // DBG
 
-const int dX[4]{1, 0, -1, 0}, dY[4]{0, 1, 0, -1};
+const string PROB_NAME = "balancing";
 
-// check for overflow (long long vs int / make everything long long)
-// index out of bounds can cause program to work locally but won't on grading server
-//
-// Solution Ideas:
-//  - Linear search
-//  - Binary search
-//  - Unordered_... data structures
+using P = pair<int, int>;
 
-// ** RESET GLOBALS **
-
-vpi cows;
+int n;
+vector<P> x, y;
 
 int main () {
-    fastIO;
-#ifdef LOCAL
-    clock_t tStart = clock();
-#endif
+    ios_base::sync_with_stdio(false); cin.tie(nullptr);
+#ifndef LOCAL
+    freopen((PROB_NAME + ".in").c_str(), "r", stdin);
+    freopen((PROB_NAME + ".out").c_str(), "w", stdout);
+#endif // LOCAL
 
-    int n; cin >> n;
-    cows.resize(n);
-    for (auto& [a, b] : cows) cin >> a >> b;
-    sort(all(cows));
-
+    cin >> n; x.resize(n), y.resize(n);
     for (int i = 0; i < n; i++) {
-        int cur = 0;
-        for (int j = 0; j < n; j++) {
+        cin >> x[i].first >> x[i].second;
+        y[i] = x[i];
+    }
+    sort(begin(x), end(x), [] (P a, P b) -> bool { return a.first < b.first; });
+    sort(begin(y), end(y), [] (P a, P b) -> bool { return a.second < b.second; });
 
+    int ans = 2e9;
+    for (int i = 0; i < n; ) {
+        int vert = x[i].first + 1;
+        vector<P> left, right;
+        for (int i = 0; i < n; i++) {
+            if (y[i].first < vert) left.push_back(y[i]);
+            else right.push_back(y[i]);
         }
+        int l = 0, r = 0;
+        while (l + r < n) {
+            int hor = y[l + r].second + 1;
+            while (l < left.size() && left[l].second < hor) l++;
+            while (r < right.size() && right[r].second < hor) r++;
+            int arr[] = {l, r, int(left.size() - l), int(right.size() - r)};
+            ans = min(ans, *max_element(begin(arr), end(arr)));
+        }
+        while (i < n && vert - 1 == x[i].first) i++;
     }
 
-#ifdef LOCAL
-    cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
-#endif
+    cout << ans << '\n';
 
     return 0;
 }
-
