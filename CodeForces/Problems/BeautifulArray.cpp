@@ -6,7 +6,7 @@ using namespace std;
 #else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
-#endif
+#endif // DBG
 
 void _solve () {
 
