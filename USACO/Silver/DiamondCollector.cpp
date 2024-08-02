@@ -1,59 +1,44 @@
-#include <iostream>
-#include <cstdio>
-#include <algorithm>
-#include <string>
-#include <vector>
-#include <utility>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-#define fo(i, n) for (int i = 0; i<n; i++)
-#define endl '\n'
-using ll = long long;
+#ifdef DBG
+#include "dbg.h"
+#else
+#define dbg(...)
+#define dbgm(...)
+#endif
 
-using pi = pair<int,int>;
-using pll = pair<ll, ll>;
-#define f first
-#define s second
-#define mp make_pair
-
-using vi = vector<int>; 
-using vll = vector<ll>;
-#define pb push_back
-#define all(x) begin(x), end(x)
-
-void setIO (string input = "") {
-	ios_base::sync_with_stdio(false); cin.tie(NULL);
-	if (input.size()) {
-		freopen((input+".in").c_str(), "r", stdin);
-		freopen((input+".out").c_str(), "w", stdout);
-	}
-}
+#define set_io(x)                                       \
+    freopen((string(x) + ".in").c_str(), "r", stdin);   \
+    freopen((string(x) + ".out").c_str(), "w", stdout);
 
 int main () {
-	setIO("diamond");	
-	
-	ll n, k; cin>>n>>k;
-	vll sizes(n); fo(i, n) cin>>sizes[i];
+    ios_base::sync_with_stdio(false); cin.tie(nullptr);
+#ifndef LOCAL
+    set_io("diamond");
+#endif
 
-	sort(all(sizes));
+    int n, k; cin >> n >> k;
+    vector<int> a(n); for (int& i : a) cin >> i;
+    sort(begin(a), end(a));
 
-	vll compat;
-	ll right = 0; 
-	fo(left, n) {
-		while (right<n && sizes[right]-sizes[left]<=k) right++; 
-		compat.pb(right-left);
-	}
-	
-	vll maxVal(n+1);
-	maxVal[n] = 0;
-	for (ll i = n-1; i>=0; i--) maxVal[i] = max(maxVal[i+1], compat[i]);
+    vector<int> mxs(n);
+    for (int i = 0; i < n; i++) {
+        int count = 0;
+        while (count + i < n && a[count + i] - a[i] <= k) {
+            count++;
+        }
+        mxs[i] = count;
+    }
 
+    int ans = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (j >= mxs[i] + i)
+                ans = max(ans, mxs[i] + mxs[j]);
+        }
+    }
+    cout << ans << '\n';
 
-	ll ans = 0;
-	fo(i, n) ans = max(ans, compat[i] + maxVal[i + compat[i]]);
-	
-	cout<<ans<<endl;
-
-	return 0;
+    return 0;
 }

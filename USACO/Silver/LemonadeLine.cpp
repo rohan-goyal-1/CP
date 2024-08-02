@@ -37,7 +37,7 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
@@ -64,10 +64,7 @@ int main () {
     vi nums(n); for (auto& i : nums) cin >> i;
     sort(all(nums), greater<int>());
     int cur = 0;
-    for (int i = 0; i < n; i++) {
-        if (cur <= nums[i]) cur++;
-        else break;
-    }
+    for (; cur < n && cur <= nums[cur]; cur++) {}
     cout << cur << nl;
 
     return 0;

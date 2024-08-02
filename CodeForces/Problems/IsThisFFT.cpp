@@ -8,20 +8,19 @@ using namespace std;
 #define dbgm(...)
 #endif
 
-using i64 = int64_t;
 #define all(x) begin(x), end(x)
 #define rall(x) rbegin(x), rend(x)
-#define set_io(x)                                       \
-    freopen((string(x) + ".in").c_str(), "r", stdin);   \
-    freopen((string(x) + ".out").c_str(), "w", stdout);
 
 int main () {
     ios_base::sync_with_stdio(false); cin.tie(nullptr);
-#ifndef LOCAL
-    set_io("leftout");
-#endif
 
-
+    int n; cin >> n;
+    cout << "0\n" << "1\n";
+    cout << n << '\n';
+    for (int i = 0; i < n + 1; i++) {
+        int a; cin >> a;
+        cout << a << " \n"[i == n];
+    }
 
     return 0;
 }

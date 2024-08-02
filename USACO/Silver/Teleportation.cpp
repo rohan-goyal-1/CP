@@ -8,9 +8,6 @@ using namespace std;
 #define dbgm(...)
 #endif
 
-using i64 = int64_t;
-#define all(x) begin(x), end(x)
-#define rall(x) rbegin(x), rend(x)
 #define set_io(x)                                       \
     freopen((string(x) + ".in").c_str(), "r", stdin);   \
     freopen((string(x) + ".out").c_str(), "w", stdout);
@@ -18,10 +15,11 @@ using i64 = int64_t;
 int main () {
     ios_base::sync_with_stdio(false); cin.tie(nullptr);
 #ifndef LOCAL
-    set_io("leftout");
+    set_io("teleport");
 #endif
 
-
+    int n; cin >> n;
+    vector<pair<int, int>> m(n); for (auto& [a, b] : m) cin >> a >> b;
 
     return 0;
 }

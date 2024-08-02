@@ -8,18 +8,7 @@ using namespace std;
 #define dbgm(...) 110100100
 #endif // DBG
 
-// check for overflow (long long vs int / make everything long long)
-// index out of bounds can cause program to work locally but won't on grading server
-
-// Solution Ideas:
-//  - Linear search
-//  - Binary search
-//  - Unordered_... data structures
-
-// ** RESET GLOBALS **
-
-int adj[52];
-bool vis[52];
+int adj[52], in[52], vis[52];
 
 int to_int (char c) {
     if (c >= 'a') return c - 'a';
@@ -27,16 +16,16 @@ int to_int (char c) {
 }
 
 void _solve () {
-    // reset
     memset(adj, -1, 52*sizeof(adj[0]));
     memset(vis, false, 52*sizeof(vis[0]));
+    memset(in, 0, 52*sizeof(in[0]));
 
     string a, b; cin >> a >> b;
     int n = a.length();
     set<char> s;
     for (int i = 0; i < n; i++) {
         s.insert(b[i]);
-        if (adj[to_int(a[i])] != -1 && adj[to_int(a[i])] != b[i]) {
+        if (adj[to_int(a[i])] != -1 && adj[to_int(a[i])] != to_int(b[i])) {
             cout << -1 << '\n';
             return;
         }
@@ -57,25 +46,30 @@ void _solve () {
     // all edges
     for (int i = 0; i < 52; i++) {
         if (adj[i] != -1 && adj[i] != i) {
+            in[adj[i]]++;
             ans++;
         }
     }
 
     // sum all pure cycles with size > 1
     for (int i = 0; i < 52; i++) {
-        if (adj[i] != i && adj[i] != -1) {
-            int x = adj[i];
-            int y = adj[x];
-            while (x != -1 && y != -1 && x != y) {
+        if (vis[i]) continue;
+        int x = i;
+        while (x != -1 && !vis[x]) {
+            vis[x] = i + 1;
+            x = adj[x];
+        }
+        if (x != -1 && x != adj[x] && vis[x] == i + 1) {
+            bool f = true;
+            int y = x;
+            do {
+                vis[x] = 2;
+                if (in[x] > 1) {
+                    f = false;
+                }
                 x = adj[x];
-                y = adj[y];
-            }
-            x = i;
-            while (x != -1 && y != -1 && x != y) {
-                x = adj[x];
-                y = adj[y];
-            }
-            if (x == i) ans++;
+            } while (x != y);
+            if (f) ans++;
         }
     }
 

@@ -6,22 +6,24 @@ using namespace std;
 #else
 #define dbg(...)
 #define dbgm(...)
-#endif
+#endif // DBG
 
-using i64 = int64_t;
 #define all(x) begin(x), end(x)
 #define rall(x) rbegin(x), rend(x)
-#define set_io(x)                                       \
-    freopen((string(x) + ".in").c_str(), "r", stdin);   \
-    freopen((string(x) + ".out").c_str(), "w", stdout);
+
+void _solve () {
+    int n, m, x, y, d; cin >> n >> m >> x >> y >> d;
+    bool ans = (x - d > 1 && d + y < m) || (y - d > 1 && d + x < n);
+    cout << (ans ? n + m - 2 : -1) << '\n';
+}
 
 int main () {
     ios_base::sync_with_stdio(false); cin.tie(nullptr);
-#ifndef LOCAL
-    set_io("leftout");
-#endif
 
-
+    int t; cin >> t;
+    while (t--) {
+        _solve();
+    }
 
     return 0;
 }

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <cstdio>
 #include <cstring>
 #include <functional>
 #include <iomanip>
@@ -17,6 +18,7 @@
 #include <stack>
 #include <numeric>
 using namespace std;
+#define endl '\n'
 #define sp ' '
 #define nl '\n'
 #define fastIO cin.tie(NULL) -> sync_with_stdio(false)
@@ -30,16 +32,17 @@ using vpi = vector<pi>;
 using vpl = vector<pll>;
 #define pb push_back
 #define all(x) begin(x), end(x)
-#pragma GCC optimize("O3,unroll-loops")
+#define max(n, m) ((n > m) ? n : m)
+#define min(n, m) ((n < m) ? n : m)
+#define YES cout << "YES" << nl
+#define NO cout << "NO" << nl
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
-
-const int dX[4]{1, 0, -1, 0}, dY[4]{0, 1, 0, -1};
 
 // check for overflow (long long vs int / make everything long long)
 // index out of bounds can cause program to work locally but won't on grading server
@@ -49,31 +52,32 @@ const int dX[4]{1, 0, -1, 0}, dY[4]{0, 1, 0, -1};
 //  - Binary search
 //  - Unordered_... data structures
 
-// ** RESET GLOBALS **
+void solve () {
+    int n, m; cin >> n >> m;
+    vi B(n); for (int& b : B) cin >> b;
+    vi G(m); for (int& g : G) cin >> g;
+
+    sort(all(B)); sort(all(G));
+
+    // Impossible case
+    if (B[n - 1] > G[0]) { cout << -1 << nl; return; }
+
+    ll ans = 0;
+    for (ll b : B) { ans += (b * m); }
+    // Greedily assign to the last boy to minimize amount
+    for (int i = 1; i < m; i++) ans += G[i] - B[n - 1];
+    // If not possible to have been given by the last boy, take from the second to last boy
+    if (G[0] != B[n - 1]) ans += G[0] - B[n - 2];
+
+    cout << ans << nl;
+}
 
 int main () {
     fastIO;
-#ifdef LOCAL
-    clock_t tStart = clock();
-#endif
 
-    int n, m; cin >> n >> m;
-    vi a(n); for (int & i : a) cin >> i;
-    for (int i = 0; i < n - 1; i++) {
-        a[i + 1] = max(a[i + 1], a[i] - m);
-        a[i] = max(a[i], a[i + 1] - m);
-    }
-    for (int i = n; i > 0; i--) {
-        a[i - 1] = max(a[i - 1], a[i] - m);
-        a[i] = max(a[i], a[i - 1] - m);
-    }
-    for (int i = 0; i < n; i++) 
-        cout << a[i] << " \n"[i == n - 1];
-
-#ifdef LOCAL
-    cerr << fixed << setprecision(10) << "\nTime Taken: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << '\n';
-#endif
+    int t = 1;
+    while (t--)
+        solve();
 
     return 0;
 }
-

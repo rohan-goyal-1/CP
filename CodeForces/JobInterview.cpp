@@ -22,6 +22,8 @@ void _solve () {
     int n, m; cin >> n >> m;
     vector<int> p(n+m+1); for (int& i : p) cin >> i;
     vector<int> t(n+m+1); for (int& i : t) cin >> i;
+
+
 }
 
 int main () {

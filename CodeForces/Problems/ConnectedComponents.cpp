@@ -39,7 +39,7 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
@@ -52,32 +52,50 @@ using vpl = vector<pll>;
 //  - Binary search
 //  - Unordered_... data structures
 
-void solve () {
-    int n, m; cin >> n >> m;
-    vi B(n); for (int& b : B) cin >> b;
-    vi G(m); for (int& g : G) cin >> g;
-
-    sort(all(B)); sort(all(G));
-
-    // Impossible case 
-    if (B[n - 1] > G[0]) { cout << -1 << nl; return; }
-
-    ll ans = 0;
-    for (ll b : B) { ans += (b * m); }
-    // Greedily assign to the last boy to minimize amount
-    for (int i = 1; i < m; i++) ans += G[i] - B[n - 1];
-    // If not possible to have been given by the last boy, take from the second to last boy
-    if (G[0] != B[n - 1]) ans += G[0] - B[n - 2];
-    
-    cout << ans << nl;
-}
+int n, m;
+// remember the non-existent edges using tree map
+map<pi, bool> adj;
+vector<bool> visited;
 
 int main () {
     fastIO;
 
-    int t = 1;
-    while (t--)
-        solve();
+    cin >> n >> m;
+    visited.resize(n);
+    for (int i = 0; i < m; i++) {
+        int a, b; cin >> a >> b; --a, --b;
+        adj[{a, b}] = true; adj[{b, a}] = true;
+    }
+
+    set<int> left;
+    for (int i = 0; i < n; i++)
+        left.insert(i);
+
+    vi ans;
+    for (int i = 0; i < n; i++) {
+        if (visited[i]) continue;
+        int count = 0;
+        queue<int> q; q.push(i);
+        while (!q.empty()) {
+            vi remove;
+            int top = q.front(); q.pop();
+            if (visited[top]) continue;
+            visited[top] = true;
+            for (int l : left) {
+                if (adj[{l, top}]) continue;
+                count++;
+                remove.pb(l);
+                if (visited[l]) continue;
+                q.push(l);
+            }
+            for (int r : remove) left.erase(r);
+        }
+        ans.pb(count);
+    }
+    sort(all(ans));
+    cout << ans.size() << nl;
+    for (int a : ans) cout << a << sp;
+    cout << nl;
 
     return 0;
 }

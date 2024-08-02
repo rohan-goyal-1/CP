@@ -34,7 +34,7 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
@@ -71,8 +71,8 @@ int main () {
     }
 
     vector<vi> dp(n + 1, vi(n + 1));
-    for (int i = 0; i < n; i++) 
-        for (int j = 0; j < n; j++) 
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
             dp[i][j] = 1;
 
     for (int i = 0; i < n; i++) {
@@ -85,7 +85,7 @@ int main () {
             }
         }
     }
-    
+
     int cost = 0;
     for (int i = 0; i < n; i++) cost += dp[n][i] * grid[n][i] + dp[i][n] * grid[i][n];
     cout << cost << nl;

@@ -11,11 +11,11 @@ int main () {
 //	freopen("blocks.out", "w", stdout);
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
-	
+
 	int n; cin>>n;
 	string a[n], b[n];
 	for (int i  = 0; i<n; i++) cin>>a[i]>>b[i];
-	
+
 	int t1[26], t2[26], ans[26];
 	fill(ans, ans+26, -1);
 	for (int i = 0; i<n; i++) {
@@ -27,6 +27,6 @@ int main () {
 		for (int j = 0; j<26; j++) ans[j] = max(ans[j], max(t1[j], t2[j]));
 	}
 	for (int a : ans) cout<<a<<'\n';
-	
+
 	return 0;
 }
