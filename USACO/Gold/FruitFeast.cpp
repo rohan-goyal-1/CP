@@ -34,7 +34,7 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
@@ -68,7 +68,7 @@ void dfs (int cur, bool used) {
     vis[cur][used] = true;
     dfs(cur + a, used);
     dfs(cur + b, used);
-    if (!used) 
+    if (!used)
         dfs(cur / 2, true);
 }
 

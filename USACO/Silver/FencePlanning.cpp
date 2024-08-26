@@ -41,9 +41,9 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
-#define dbg(...) 
-#define dbgm(...) 
+#else
+#define dbg(...)
+#define dbgm(...)
 #endif
 
 inline void setIO(string input = "") {
@@ -73,11 +73,11 @@ void dfs(ll cow) {
 }
 
 int main() {
-    #ifndef LOCAL
+#ifndef LOCAL
     setIO("fenceplan");
-    #else
+#else
     fastIO;
-    #endif
+#endif
 
     ll n, m;
     cin >> n >> m;
@@ -90,7 +90,7 @@ int main() {
         cows[a].adj.pb(b);
         cows[b].adj.pb(a);
     }
-    
+
     vector<vll> networks;
     For(i, n) {
         if (!cows[i].visited) {
@@ -99,7 +99,7 @@ int main() {
             temp.clear();
         }
     }
-    
+
     ll ans = INT64_MAX;
     for (auto& net : networks) {
         ll minX = INT64_MAX, minY = INT64_MAX, maxX = -1, maxY = -1;

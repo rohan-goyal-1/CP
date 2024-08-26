@@ -37,7 +37,7 @@ using vpl = vector<pll>;
 
 #ifdef DBG
 #include "dbg.h"
-#else 
+#else
 #define dbg(...) 1000101
 #define dbgm(...) 110100100
 #endif
@@ -46,11 +46,11 @@ vi papers;
 int n, k, l;
 
 bool works (int h) {
-    int need = 0;
+    int64_t need = 0;
     for (int i = 0; i < h; i++) {
-        need += max(0, h - papers[i]);
+        need += max(0ll, h - papers[i]);
     }
-    return need <= k * l && papers[h - 1] + k >= h;
+    return need <= (int64_t) k * l && papers[h - 1] + k >= h;
 }
 
 int main () {

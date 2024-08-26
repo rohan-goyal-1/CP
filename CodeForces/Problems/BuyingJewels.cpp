@@ -6,21 +6,32 @@ using namespace std;
 #else
 #define dbg(...)
 #define dbgm(...)
-#endif // DBG
+#endif
 
-#define all(x) begin(x), end(x)
-#define rall(x) rbegin(x), rend(x)
-
-void _solve () {
+void solve () {
     int64_t n, k; cin >> n >> k;
+    if (n == k) {
+        cout << "YES\n";
+        cout << 1 << '\n';
+        cout << 1 << '\n';
+    }
+    else if (k <= (n + 1) / 2) {
+        cout << "YES\n";
+        cout << 2 << '\n';
+        cout << n - (k - 1) << ' ' << 1 << '\n';
+    }
+    else {
+        cout << "NO\n";
+    }
 }
 
 int main () {
     ios_base::sync_with_stdio(false); cin.tie(nullptr);
 
-    int t; cin >> t;
+    int t = 1;
+    cin >> t;
     while (t--) {
-        _solve();
+        solve();
     }
 
     return 0;
